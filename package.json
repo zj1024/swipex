@@ -1,0 +1,81 @@
+{
+  "name": "swipex",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "typings": "dist/es6/index.d.ts",
+  "scripts": {
+    "start": "cross-env NODE_ENV=development webpack-dev-server",
+    "build": "rimraf dist & cross-env NODE_ENV=production webpack & tsc src/*.* --outDir ./dist/es6 --declaration",
+    "build:docs": "rimraf demo/dist & cross-env NODE_ENV=production webpack --config ./webpack.docs"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "keywords": [
+    "swipex",
+    "swiper",
+    "slider",
+    "vertical",
+    "touch",
+    "rax"
+  ],
+  "author": "jingyu.zhangjing@gmail.com",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nolimits4web/Swiper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nolimits4web/swiper/issues"
+  },
+  "homepage": "http://swiperjs.com",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -e",
+      "pre-push": "npm test"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.{js}": [
+      "npx eslint --fix"
+    ],
+    "*.{ts,tsx,js,less,json,md}": [
+      "npx prettier --write"
+    ],
+    "*.{ts,tsx}": [
+      "npx tslint --fix"
+    ]
+  },
+  "devDependencies": {
+    "@babel/core": "^7.9.6",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-typescript": "^7.9.0",
+    "@commitlint/config-conventional": "^8.3.4",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.1.0",
+    "commitlint": "^8.3.5",
+    "cross-env": "^7.0.2",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "happypack": "^5.0.1",
+    "html-webpack-plugin": "^4.3.0",
+    "husky": "^3.0.9",
+    "lint-staged": "^10.2.7",
+    "rimraf": "^3.0.2",
+    "tslint": "^6.1.2",
+    "typescript": "^3.8.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
+  }
+}

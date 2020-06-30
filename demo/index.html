@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        font-family: -apple-system, Microsoft YaHei;
+        background: #f2f2f2;
+      }
+
+      /* swipe-plus css */
+      .swipe {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        visibility: hidden;
+      }
+      .swipe-wrap {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+        background: #f58390;
+      }
+      .swipe-wrap > div {
+        width: 100%;
+        height: 100%;
+        float: left;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 50px;
+      }
+      .swipe-wrap .item {
+        background: #188eee;
+        color: #fff;
+      }
+      .swipe-wrap .item:nth-child(2n) {
+        background: pink;
+        color: #fff;
+      }
+
+      /* functional css */
+      .toggle {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 9;
+        width: 80%;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        margin: 10px 0 10px 10%;
+      }
+
+      .pagination {
+        position: fixed;
+        left: 0;
+        bottom: 20px;
+        width: 100%;
+        display: flex;
+        justify-content: space-around;
+      }
+
+      .pagination button {
+        padding: 8px 15px;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="toggle" class="toggle">horizontal</button>
+    <div id="swipeX" class="swipe">
+      <div class="swipe-wrap">
+        <div class="item">1</div>
+        <div class="item">2</div>
+        <div class="item">3</div>
+        <div class="item">4</div>
+        <div class="item">5</div>
+        <div class="item">6</div>
+      </div>
+    </div>
+    <section class="pagination">
+      <button id="prev">prev</button>
+      <button id="next">next</button>
+    </section>
+  </body>
+</html>
