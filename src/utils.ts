@@ -1,7 +1,3 @@
-export function isTrue(value: any = '') {
-  return value === 'true' || value === true
-}
-
 // offload a functions execution
 export function offloadFn(fn: any) {
   setTimeout(fn || function () {}, 0)
@@ -13,6 +9,11 @@ export function checkBrowser() {
     touch: 'ontouchstart' in window,
     transitions: document.body.style.transition !== undefined,
   }
+}
+
+// compatibility with rax framework
+export function px2vw(px: number, clientWidth: number) {
+  return `${(px * 100) / clientWidth}vw`
 }
 
 export function throttle(method: any, wait: number, { leading = true, trailing = true } = {}) {
@@ -56,8 +57,4 @@ export function throttle(method: any, wait: number, { leading = true, trailing =
   }
 
   return throttled
-}
-
-export function px2vw(px: number, clientWidth: number) {
-  return `${(px * 100) / clientWidth}vw`
 }

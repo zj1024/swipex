@@ -3,7 +3,7 @@ import SwipeX from '../src/index'
 // swipeX all config
 const config = {
   // auto: 3000, // default: 0
-  startSlide: 0, // default: 0
+  startSlide: 1, // default: 0
   speed: 300, // default: 300
   continuous: true, // can slide loop, default true
   // disableScroll: true, // default : undefined
@@ -18,7 +18,7 @@ const config = {
   transitionEnd: (index, element) => {
     console.log('[swipeX config] transitionEnd >>>', 'index', index, 'element', element) // slideIndex, slideElement
   },
-  framework: 'rax', // use in rax framework, default: undefined
+  // framework: 'rax', // use in rax framework, default: undefined
 }
 
 // init
@@ -49,15 +49,4 @@ toggleBtn.addEventListener('click', () => {
   } else {
     toggleBtn.innerText = Toggle.VERTICAL
   }
-})
-
-const prev = document.querySelector('#prev')
-const next = document.querySelector('#next')
-
-prev.addEventListener('click', () => {
-  mySwipeX.prev()
-})
-
-next.addEventListener('click', () => {
-  mySwipeX.next()
 })

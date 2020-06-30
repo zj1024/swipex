@@ -21,3 +21,12 @@ export enum EPosition {
 export enum EFramework {
   RAX = 'rax',
 }
+
+export enum EEvent {
+  TOUCH_START = 'touchstart',
+  TOUCH_MOVE = 'touchmove',
+  TOUCH_END = 'touchend',
+  MOUSEDOWN = 'mousedown',
+  MOUSEENTER = 'mouseenter',
+  MOUSELEAVE = 'mouseleave',
+}

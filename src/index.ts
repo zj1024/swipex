@@ -1,11 +1,10 @@
-import { EDirection, EBox, EOffset, EPosition, EFramework } from './common/enum'
+import { EDirection, EBox, EPosition, EFramework, EEvent } from './common/enum'
 import { offloadFn, checkBrowser, px2vw } from './utils'
 
 interface IOptions {
   auto?: number | undefined
   startSlide?: number
   speed?: number
-  widthOfSiblingSlidePreview?: number
   continuous?: boolean
   disableScroll?: boolean
   stopPropagation?: boolean
@@ -13,7 +12,7 @@ interface IOptions {
   swiping?: (res: number) => void
   callback?: (index: number, element: Element) => void
   transitionEnd?: (index: number, element: Element) => void
-  framework?: 'rax'
+  framework?: 'rax' // compatibility with rax framework
 }
 
 const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
@@ -27,50 +26,66 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
     isRax = true
   }
 
-  // 检查浏览器能力
+  // check browser ability
   const browser = checkBrowser()
+
+  // this option's value maybe changed
   const options = { ...defaultOptions } || {}
-  const element = <HTMLElement>container.children[0] // 包裹的元素 item-wrapper
-  const { speed = 300, widthOfSiblingSlidePreview = 0, auto = 0 } = options
+  // equal to item-wrapper, container's child
+  const element = <HTMLElement>container.children[0]
+  const { speed = 300, auto = 0 } = options
   const isVertical = options.direction === EDirection.VERTICAL
 
   /**
-   * slides 所有滚动元素
-   * slidePos 所有滚动元素对应位置
-   * distance 距离
-   * index 当前下标
-   * continuous 相当于loop
+   * @param {slides}     :all items
+   * @param {slidePos}   :all items position
+   * @param {distance}   :items' width or height(why height? vertical mode)
+   * @param {index}      :current item's index
+   * @param {continuous} :loop
    */
   let slides: HTMLCollection
   let slidePos: number[]
   let distance: number
   let index = options.startSlide || 0
-  let continuous: boolean = (options.continuous = defaultOptions.continuous || true)
-  // setup auto slideshow
+  let continuous: boolean = true
+  if (typeof defaultOptions.continuous === 'boolean') {
+    continuous = options.continuous = defaultOptions.continuous
+  } else {
+    options.continuous = continuous
+  }
+
   let delay = auto || 0
   let interval: NodeJS.Timeout
 
+  // to resolve framework rax
   let setDistance: (value: number) => string
 
-  // 设置全局的常量用来区分方向相关值
+  // set global constant to differentiate value about direction
   const DIRECTION_BOX: EBox = isVertical ? EBox.HEIGHT : EBox.WIDTH
-  const DIRECTION_OFFSET: EOffset = isVertical ? EOffset.OFFSET_HEIGHT : EOffset.OFFSET_WIDTH
   const DIRECTION_POSITION: EPosition = isVertical ? EPosition.TOP : EPosition.LEFT
 
   function setup() {
-    // 判断rax环境设置距离
+    // to resolve framework rax
     let clientWidth = document.documentElement.getBoundingClientRect().width
+
     setDistance = (value: number) => (isRax ? px2vw(value, clientWidth) : `${value}px`)
 
-    // 每次重新setup设置初始值
+    // reset this value when rerun setup function
     slides = element.children
     slidePos = new Array(slides.length)
-    distance =
-      Math.round(container.getBoundingClientRect()[DIRECTION_BOX] || container[DIRECTION_OFFSET]) -
-      widthOfSiblingSlidePreview * 2
-    // 如果元素小于3个，强行不能loop
+
+    distance = Math.round(slides[0].getBoundingClientRect()[DIRECTION_BOX])
+
+    // if slide item < 3, force cannot loop
     continuous = slides.length < 3 ? false : (options.continuous as boolean)
     element.style[DIRECTION_BOX] = setDistance(slides.length * distance)
+
+    // every time will recomputed container width & height
+    if (isVertical) {
+      container.style[DIRECTION_BOX] = setDistance(distance)
+    } else {
+      container.style[EBox.WIDTH] = setDistance(distance)
+    }
 
     // stack elements
     let pos = slides.length
@@ -78,12 +93,11 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
     while (pos--) {
       const slide = <HTMLElement>slides[pos]
       slide.style[DIRECTION_BOX] = setDistance(distance)
-      slide.style[isVertical ? 'width' : 'height'] = '100%'
       slide.setAttribute('data-index', `${pos}`)
 
       if (browser.transitions) {
-        // 元素设置位置
-        slide.style[DIRECTION_POSITION] = setDistance(pos * -distance + widthOfSiblingSlidePreview)
+        // init: set left or top position
+        slide.style[DIRECTION_POSITION] = setDistance(pos * -distance)
         let dist = 0
         if (index > pos) {
           dist = -distance
@@ -106,9 +120,7 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
     }
 
     if (!browser.transitions) {
-      element.style[DIRECTION_POSITION] = setDistance(
-        index * -distance + widthOfSiblingSlidePreview,
-      )
+      element.style[DIRECTION_POSITION] = setDistance(index * -distance)
     }
     container.style.visibility = 'visible'
   }
@@ -237,13 +249,13 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
   const events = {
     handleEvent: function (event: Event & TouchEvent) {
       switch (event.type) {
-        case 'touchstart':
+        case EEvent.TOUCH_START:
           this.start(event)
           break
-        case 'touchmove':
+        case EEvent.TOUCH_MOVE:
           this.move(event)
           break
-        case 'touchend':
+        case EEvent.TOUCH_END:
           offloadFn(this.end())
           break
         case 'transitionend':
@@ -258,7 +270,6 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
     },
 
     start: function (event: TouchEvent) {
-      // 触摸相关数据
       const touches = event.touches[0]
 
       // measure start values
@@ -278,11 +289,11 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
       delta = {} as any
 
       // attach touchmove and touchend listeners
-      element.addEventListener('touchmove', this, {
+      element.addEventListener(EEvent.TOUCH_MOVE, this, {
         capture: false,
         passive: true,
       })
-      element.addEventListener('touchend', this, {
+      element.addEventListener(EEvent.TOUCH_END, this, {
         capture: false,
         passive: true,
       })
@@ -311,12 +322,8 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
         }
       }
 
-      // if user is not trying to scroll vertically
-      // 如果用户想要横向 || 纵向滑动
+      // if user is not trying to scroll vertically or horizontally
       if (!isScrolling) {
-        // prevent native scrolling
-        // event.preventDefault()
-
         // stop slideshow
         stop()
 
@@ -361,8 +368,7 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
       // measure duration
       let duration = Number(new Date()) - (start.time as number)
 
-      // FIXME: width / 2 now I use 3 to test
-      // 用来检测是否可滑动
+      // TODO: width / 2 now I use 3 to test
       // determine if slide attempt triggers next/prev slide
       let isValidSlide =
         (duration < 250 && // if slide duration is less than 250ms
@@ -371,7 +377,6 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
 
       // determine if slide attempt is past start and end
 
-      // 为了检测是否跳跃滑动
       let isPastBounds =
         (!index && deltaValue > 0) || // if first slide and slide amt is greater than 0
         (index == slides.length - 1 && deltaValue < 0) // or if last slide and slide amt is less than 0
@@ -384,7 +389,6 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
       // if not scrolling vertically
       if (!isScrolling) {
         if (isValidSlide && !isPastBounds) {
-          // 正向滑动
           if (direction) {
             if (continuous) {
               // we need to get the next in this direction in place
@@ -399,7 +403,6 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
             move(circle(index + 1), slidePos[circle(index + 1)] - distance, speed)
             index = circle(index + 1)
           } else {
-            // 反向滑动
             if (continuous) {
               // we need to get the next in this direction in place
 
@@ -429,8 +432,8 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
       }
 
       // kill touchmove and touchend event listeners until touchstart called again
-      element.removeEventListener('touchmove', events, false)
-      element.removeEventListener('touchend', events, false)
+      element.removeEventListener(EEvent.TOUCH_MOVE, events, false)
+      element.removeEventListener(EEvent.TOUCH_END, events, false)
       element.removeEventListener('touchforcechange', function () {}, false)
     },
 
@@ -453,7 +456,7 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
   if (browser.addEventListener) {
     // set touchstart event on element
     if (browser.touch) {
-      element.addEventListener('touchstart', events, {
+      element.addEventListener(EEvent.TOUCH_START, events, {
         passive: true,
       })
       element.addEventListener('touchforcechange', function () {}, false)
@@ -522,7 +525,7 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
       // removed event listeners
       if (browser.addEventListener) {
         // remove current event listeners
-        element.removeEventListener('touchstart', events, false)
+        element.removeEventListener(EEvent.TOUCH_START, events, false)
         element.removeEventListener('transitionend', events, false)
         window.removeEventListener('resize', events, false)
       } else {

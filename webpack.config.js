@@ -5,12 +5,13 @@ const HappyPack = require('happypack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 
+// to change this value to show different page
 const PORT = 3000
 const ENV = {
   DEVELOPMENT: 'development',
   PRODUCTION: 'production',
 }
-const { NODE_ENV = ENV.DEVELOPMENT } = process.env
+const { NODE_ENV = ENV.DEVELOPMENT, PAGE = 'index' } = process.env
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
 
 function envHandler(type = ENV.DEVELOPMENT, callback = () => {}, isObj = false) {
@@ -51,7 +52,7 @@ function getIPv4AddressList() {
 
 module.exports = {
   mode: NODE_ENV,
-  entry: NODE_ENV === ENV.DEVELOPMENT ? './demo/index' : './src/index',
+  entry: NODE_ENV === ENV.DEVELOPMENT ? `./demo/${PAGE}` : './src/index',
   output: {
     path: path.resolve(__dirname, './dist'),
     filename: 'index.js',
@@ -91,7 +92,7 @@ module.exports = {
     envHandler(
       ENV.DEVELOPMENT,
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, './demo/index.html'),
+        template: path.resolve(__dirname, `./demo/${PAGE}.html`),
       }),
     ),
     envHandler(
