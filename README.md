@@ -4,7 +4,7 @@ Mobile swiper support horizontal and vertical mode.
 
 ![MIT](https://img.shields.io/badge/license-MIT-green) ![SIZE](https://img.shields.io/badge/size-7.04%20kb-blue) ![VERSION](https://img.shields.io/badge/version-0.0.1-green)
 
-<video width="300" autoplay muted playsinline src="https://gw.alipayobjects.com/mdn/rms_1295b8/afts/file/A*mUybQYe_h7YAAAAAAAAAAABkARQnAQ" />
+<img width="300" src="https://img.alicdn.com/tfs/TB1zpC_MeL2gK0jSZPhXXahvXXa-320-656.gif" alt="swipex demo gif">
 
 ## Get start
 
