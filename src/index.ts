@@ -17,7 +17,9 @@ interface IOptions {
 
 const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
   if (!container) {
-    throw new Error('Target container is not a DOM element')
+    throw new Error(
+      `[swipex] error: container is not a DOM element, Did you passing parameter with: Swipex(container)`,
+    )
   }
 
   // support rax framework
@@ -32,7 +34,15 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
   // this option's value maybe changed
   const options = { ...defaultOptions } || {}
   // equal to item-wrapper, container's child
-  const element = <HTMLElement>container.children[0]
+  let element: HTMLElement
+  if (container.children && container.children[0]) {
+    element = <HTMLElement>container.children[0]
+  } else {
+    throw new Error(
+      `[swipex] error: container's first child is not valid, please check dom organization`,
+    )
+  }
+
   const { speed = 300, auto = 0 } = options
   const isVertical = options.direction === EDirection.VERTICAL
 
@@ -73,8 +83,10 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
     // reset this value when rerun setup function
     slides = element.children
     slidePos = new Array(slides.length)
-
-    distance = Math.round(slides[0].getBoundingClientRect()[DIRECTION_BOX])
+    distance = Math.round(
+      (slides[0] && slides[0].getBoundingClientRect()[DIRECTION_BOX]) ||
+        element.getBoundingClientRect()[DIRECTION_BOX],
+    )
 
     // if slide item < 3, force cannot loop
     continuous = slides.length < 3 ? false : (options.continuous as boolean)

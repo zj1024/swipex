@@ -8,9 +8,9 @@ Smoothly swiper support horizontal and vertical mode.
 
 <img width="300" src="https://img.alicdn.com/tfs/TB1zpC_MeL2gK0jSZPhXXahvXXa-320-656.gif" alt="swipex demo gif">
 
-[>>>>>>>>>> 「source code 」<<<<<<<<<<](https://github.com/zj1024/swipex/blob/master/demo/index.js)
+<a href="https://github.com/zj1024/swipex/blob/master/demo/index.js">>>>>>>>>>> 「source code 」<<<<<<<<<<</a>
 
-[>>>>>>>>>> 「demo online 」<<<<<<<<<<](https://swipex.vercel.app/)
+<a href="https://swipex.vercel.app/">>>>>>>>>>> 「demo online 」<<<<<<<<<<</a>
 
 ## Quick Start
 
@@ -108,14 +108,38 @@ there is a few styles to your stylesheet
 
 ### SwipeX.method()
 
-include:
+#### Include:
 
-- SwipeX.prev() slide to prev item
-- SwipeX.next() slide to next item
-- SwipeX.getPos() return current slide index
-- SwipeX.getNumSlides() return total slide items
-- SwipeX.slide(index: number, speed: number) slide to index item with custom speed (speed: milliseconds)
-- SwipeX.disableScrolling(disableScroll: boolean) directly control scrolling (disableScroll: same as the config option )
+- **`SwipeX.prev()`** slide to prev item
+- **`SwipeX.next()`** slide to next item
+- **`SwipeX.getPos()`** return current slide index
+- **`SwipeX.getNumSlides()`** return total slide items
+- **`SwipeX.slide(index: number, speed: number)`** slide to index item with custom speed (speed: milliseconds)
+- **`SwipeX.disableScrolling(disableScroll: boolean)`** directly control scrolling (disableScroll: same as the config option )
+
+#### Example:
+
+```javascript
+window.mySwipeX = SwipeX(container, {
+  auto: 3000, // default: 0
+  startSlide: 0, // default: 0
+  speed: 300, // default: 300
+  continuous: true, // can slide loop, default true
+  disableScroll: false, // default : undefined
+  stopPropagation: true, // default: undefined
+  direction: 'horizontal', // support horizontal and vertical mode, default: 'horizontal'
+  framework: 'rax', // use in rax framework, default: undefined
+  callback: (index, element) => {
+    console.log('callback: index - ', index, 'element - ', element)
+  },
+  swiping: res => {
+    console.log('swiping: res - ', res) // 0 - 1
+  },
+  transitionEnd: (index, element) => {
+    console.log('transitionEnd: index - ', index, 'element - ', element)
+  },
+})
+```
 
 ## contribute
 
