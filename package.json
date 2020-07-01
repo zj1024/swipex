@@ -9,7 +9,7 @@
     "start:other": "cross-env NODE_ENV=development PAGE=other webpack-dev-server",
     "build": "rimraf dist & cross-env NODE_ENV=production webpack & tsc src/*.* --outDir ./dist/es6 --declaration",
     "build:docs": "rimraf demo/dist & cross-env NODE_ENV=production webpack --config ./webpack.docs",
-    "prepublish": "yarn build & yarn build:docs",
+    "publish:pre": "yarn build & yarn build:docs",
     "publish:docs": "now ./demo/dist --prod"
   },
   "files": [
