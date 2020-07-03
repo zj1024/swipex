@@ -101,7 +101,7 @@ there is a few styles to your stylesheet
 | direction       |                                              | horizontal,vertical              | horizontal    |
 | stopPropagation |                                              | boolean                          | -             |
 | disableScroll   | stop touches on this container               | boolean                          | -             |
-| debounce        | debounce for user slide                      | boolean                          | -             |
+| debounce        | debounce for user slide                      | boolean                          | false         |
 | framework       | support [rax framework](https://rax.js.org/) | rax                              | -             |
 | swiping         | swiping percentage (0-1)                     | (res: number) => void            | -             |
 | callback        | slider change                                | (index: number, element) => void | -             |
