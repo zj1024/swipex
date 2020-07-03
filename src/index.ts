@@ -13,6 +13,7 @@ interface IOptions {
   callback?: (index: number, element: Element) => void
   transitionEnd?: (index: number, element: Element) => void
   framework?: 'rax' // compatibility with rax framework
+  debounce?: boolean
 }
 
 const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
@@ -43,7 +44,7 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
     )
   }
 
-  const { speed = 300, auto = 0 } = options
+  const { speed = 300, auto = 0, debounce = false } = options
   const isVertical = options.direction === EDirection.VERTICAL
 
   /**
@@ -63,6 +64,7 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
   } else {
     options.continuous = continuous
   }
+  let isTransitionLock = false
 
   let delay = auto || 0
   let interval: NodeJS.Timeout
@@ -282,6 +284,11 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
     },
 
     start: function (event: TouchEvent) {
+      if (debounce && isTransitionLock) {
+        return
+      }
+      isTransitionLock = true
+
       const touches = event.touches[0]
 
       // measure start values
@@ -451,7 +458,11 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
 
     transitionEnd: function (event: Event) {
       if (parseInt((event as any).target.getAttribute('data-index'), 10) === index) {
-        if (delay) begin()
+        if (delay) {
+          begin()
+        }
+
+        isTransitionLock = false
 
         options.transitionEnd && options.transitionEnd.call(event, index, slides[index])
       }

@@ -101,10 +101,23 @@ there is a few styles to your stylesheet
 | direction       |                                              | horizontal,vertical              | horizontal    |
 | stopPropagation |                                              | boolean                          | -             |
 | disableScroll   | stop touches on this container               | boolean                          | -             |
+| debounce        | debounce for user slide                      | boolean                          | -             |
 | framework       | support [rax framework](https://rax.js.org/) | rax                              | -             |
 | swiping         | swiping percentage (0-1)                     | (res: number) => void            | -             |
 | callback        | slider change                                | (index: number, element) => void | -             |
 | transitionEnd   | slider change (after callback )              | (index: number, element) => void | -             |
+
+Tips: 「debounce」 only work on user gesture operation, it not work at auto param or SwipeX.slide function
+
+For example options:
+debounce will not work at `auto` mode, but it will work at user gesture operation
+
+```javascript
+{
+  auto: 200,
+  debounce: true
+}
+```
 
 ### SwipeX.method()
 
@@ -170,4 +183,4 @@ npm run start:other
 
 1. swipe container use css: position: fixed window.resize will unexpected
 
-2. width or height computed is slide item getBoundingClientRect()
+2. width or height computed is slide item getBoundingClientRect(), if do not have slide item, it will find wrapper.
