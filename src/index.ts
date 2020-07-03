@@ -532,17 +532,19 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
     kill: function () {
       // cancel slideshow
       stop()
-      element.style[DIRECTION_BOX] = ''
-      element.style[DIRECTION_POSITION] = ''
+
+      // FIXME: forbid reset style
+      // element.style[DIRECTION_BOX] = ''
+      // element.style[DIRECTION_POSITION] = ''
 
       // reset slides
       let pos = slides.length
       while (pos--) {
-        const slide = <HTMLElement>slides[pos]
-        slide.style[DIRECTION_BOX] = ''
-        slide.style[DIRECTION_POSITION] = ''
-
-        if (browser.transitions) translate(pos, 0, 0)
+        // FIXME: forbid reset style
+        // const slide = <HTMLElement>slides[pos]
+        // slide.style[DIRECTION_BOX] = ''
+        // slide.style[DIRECTION_POSITION] = ''
+        // if (browser.transitions) translate(pos, 0, 0)
       }
 
       // removed event listeners
