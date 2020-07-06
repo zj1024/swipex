@@ -6,7 +6,7 @@ let lastIndex = null
 const container = document.getElementById('swipeX')
 window.mySwipeX = SwipeX(container, {
   debounce: true,
-  direction: 'horizontal',
+  direction: 'vertical',
   transitionEnd: index => {
     if (index === 3) {
       lastIndex = mySwipeX.getPos()
@@ -14,7 +14,7 @@ window.mySwipeX = SwipeX(container, {
       console.log('kill')
       window.mySwipeX = SwipeX(container, {
         debounce: true,
-        direction: 'horizontal',
+        direction: 'vertical',
         continuous: false,
       })
       mySwipeX.slide(lastIndex, 0)
