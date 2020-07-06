@@ -287,7 +287,6 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
       if (debounce && isTransitionLock) {
         return
       }
-      isTransitionLock = true
 
       const touches = event.touches[0]
 
@@ -372,10 +371,10 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
                 deltaValue < 0) // and if sliding at all
                 ? Math.abs(deltaValue) / distance + 1 // determine resistance level
                 : 1) // no resistance if false
+            translate(index - 1, deltaValue + slidePos[index - 1], 0)
           }
 
           // translate 1:1
-          translate(index - 1, deltaValue + slidePos[index - 1], 0)
           translate(index, deltaValue + slidePos[index], 0)
           translate(index + 1, deltaValue + slidePos[index + 1], 0)
         }
@@ -408,6 +407,13 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
       // if not scrolling vertically
       if (!isScrolling) {
         if (isValidSlide && !isPastBounds) {
+          /**
+           * lock user gestures
+           * 1. corresponding to: events.start() if (debounce && isTransitionLock) return;
+           * 2. end of: events.transitionEnd
+           */
+          isTransitionLock = true
+
           if (direction) {
             if (continuous) {
               // we need to get the next in this direction in place
