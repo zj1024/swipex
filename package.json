@@ -29,12 +29,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nolimits4web/Swiper.git"
+    "url": "https://github.com/zj1024/swipex.git"
   },
   "bugs": {
-    "url": "https://github.com/nolimits4web/swiper/issues"
+    "url": "https://github.com/zj1024/swipex/issues"
   },
-  "homepage": "http://swiperjs.com",
+  "homepage": "https://swipex.vercel.app/",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",

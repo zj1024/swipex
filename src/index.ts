@@ -23,17 +23,12 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
     )
   }
 
-  // support rax framework
-  let isRax = false
-  if (defaultOptions.framework === EFramework.RAX) {
-    isRax = true
-  }
-
   // check browser ability
   const browser = checkBrowser()
 
   // this option's value maybe changed
-  const options = { ...defaultOptions } || {}
+  const options = { ...defaultOptions }
+
   // equal to item-wrapper, container's child
   let element: HTMLElement
   if (container.children && container.children[0]) {
@@ -42,6 +37,17 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
     throw new Error(
       `[swipex] error: container's first child is not valid, please check dom organization`,
     )
+  }
+
+  // support rax framework
+  let isRax = false
+  if (defaultOptions.framework === EFramework.RAX) {
+    isRax = true
+  }
+
+  // browser not support, downgrade
+  if (!browser.addEventListener || !browser.touch || !browser.transitions) {
+    options.disableScroll = true
   }
 
   const { speed = 300, auto = 0, debounce = false } = options
@@ -160,6 +166,7 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
     return (slides.length + (index % slides.length)) % slides.length
   }
 
+  // function slide
   function slide(to: number, slideSpeed?: number) {
     // do nothing if already on requested slide
     if (index == to) return
@@ -228,7 +235,7 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
       let timeElap = Number(new Date()) - startTime
 
       if (timeElap > speed) {
-        element.style[DIRECTION_POSITION] = `${to}px`
+        element.style[DIRECTION_POSITION] = setDistance(to)
 
         if (delay) begin()
 
@@ -538,20 +545,6 @@ const SwipeX = (container: HTMLElement, defaultOptions: IOptions = {}) => {
     kill: function () {
       // cancel slideshow
       stop()
-
-      // FIXME: forbid reset style
-      // element.style[DIRECTION_BOX] = ''
-      // element.style[DIRECTION_POSITION] = ''
-
-      // reset slides
-      let pos = slides.length
-      while (pos--) {
-        // FIXME: forbid reset style
-        // const slide = <HTMLElement>slides[pos]
-        // slide.style[DIRECTION_BOX] = ''
-        // slide.style[DIRECTION_POSITION] = ''
-        // if (browser.transitions) translate(pos, 0, 0)
-      }
 
       // removed event listeners
       if (browser.addEventListener) {
